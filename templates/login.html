@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="upload-form">
+    <h2 style="text-align: center; color: var(--primary-blue);">Log In</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}"
+        style="padding: 10px; margin-bottom: 15px; border-radius: 4px; 
+                    {% if category == 'error' %}background-color: #f8d7da; color: #721c24;{% else %}background-color: #d4edda; color: #155724;{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Log In</button>
+    </form>
+    <p style="text-align: center; margin-top: 15px;">
+        Don't have an account? <a href="{{ url_for('signup') }}" style="color: var(--primary-blue);">Sign Up</a>
+    </p>
+</div>
+{% endblock %}

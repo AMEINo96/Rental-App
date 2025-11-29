@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="upload-form">
+    <h2 style="text-align: center; color: var(--primary-blue);">Rent your things</h2>
+    <form action="{{ url_for('rent') }}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="image">Item Image</label>
+            <input type="file" name="image" id="image" accept="image/*" required>
+        </div>
+
+        <div class="form-group">
+            <label for="title">Item Name</label>
+            <input type="text" name="title" id="title" placeholder="e.g., Gaming Laptop, Old Keyboard" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea name="description" id="description" rows="4" placeholder="Describe your item..."
+                required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="condition">Condition</label>
+            <select name="condition" id="condition">
+                <option value="New">New</option>
+                <option value="Like New">Like New</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price (per day/week)</label>
+            <input type="text" name="price" id="price" placeholder="e.g., $10/day" required>
+        </div>
+
+        <div class="form-group">
+            <label for="renting_time">Renting Duration</label>
+            <input type="text" name="renting_time" id="renting_time" placeholder="e.g., 1 week, 3 days" required>
+        </div>
+
+        <div class="form-group">
+            <label for="contact_info">Contact Details</label>
+            <input type="text" name="contact_info" id="contact_info" placeholder="Phone number or Email" required>
+        </div>
+
+        <button type="submit" class="btn-submit">List Item</button>
+    </form>
+</div>
+{% endblock %}
