@@ -7,13 +7,18 @@ import sqlite3
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here' # Change this in production
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+# Check if running on Vercel
+IS_VERCEL = os.environ.get('VERCEL') == '1'
+
+if IS_VERCEL:
+    app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
+    DB_NAME = "/tmp/database.db"
+else:
+    app.config['UPLOAD_FOLDER'] = 'static/uploads'
+    DB_NAME = "database.db"
+
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
-
-# Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-DB_NAME = "database.db"
 
 # Flask-Login setup
 login_manager = LoginManager()
