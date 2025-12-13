@@ -95,8 +95,8 @@ def index():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form['username'].strip()
+        password = request.form['password'].strip()
         
         conn = sqlite3.connect(DB_NAME)
         c = conn.cursor()
@@ -117,8 +117,8 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form['username'].strip()
+        password = request.form['password'].strip()
         
         conn = sqlite3.connect(DB_NAME)
         c = conn.cursor()
