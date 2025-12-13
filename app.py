@@ -5,9 +5,21 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change this in production
+
+# Cloudinary Configuration
+cloudinary_url = os.environ.get('CLOUDINARY_URL')
+if cloudinary_url:
+    # If CLOUDINARY_URL is present (vercel or local env), it auto-configures
+    pass
+else:
+    # Fallback or manual config if needed (but we rely on the generic env var)
+    pass
 
 # Database Configuration
 # Vercel provides POSTGRES_URL, POSTGRES_PRISMA_URL, etc.
@@ -19,7 +31,8 @@ if database_url and database_url.startswith('postgres://'):
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Upload Configuration
+# Upload Configuration (Fallback if cloudinary fails or for simpler setups)
+# We keep this for backward compatibility or local dev without internet
 if os.environ.get('VERCEL') == '1':
     app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
 else:
@@ -51,13 +64,12 @@ class Item(db.Model):
     condition = db.Column(db.String(50))
     contact_info = db.Column(db.String(150))
     renting_time = db.Column(db.String(50))
-    image_filename = db.Column(db.String(255))
+    image_filename = db.Column(db.String(255)) # This will now store URL if uploaded to Cloudinary
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
 
 
 # Or manually call it if before_first_request is deprecated in newer Flask versions you might use
@@ -143,11 +155,25 @@ def rent():
         renting_time = request.form['renting_time']
         
         image = request.files['image']
-        image_filename = ""
+        image_url = "" # Changed from image_filename to be more explicit, but column is still image_filename
+        
         if image and image.filename:
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            image_filename = filename
+            # Check for Cloudinary URL presence
+            if os.environ.get('CLOUDINARY_URL'):
+                try:
+                    upload_result = cloudinary.uploader.upload(image)
+                    image_url = upload_result.get('secure_url')
+                except Exception as e:
+                    print(f"Cloudinary upload failed: {e}")
+                    # Fallback to local save if cloudinary fails (or for local testing without key)
+                    filename = secure_filename(image.filename)
+                    image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    image_url = filename
+            else:
+                # Local save only
+                filename = secure_filename(image.filename)
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                image_url = filename
             
         new_item = Item(
             title=title,
@@ -156,7 +182,7 @@ def rent():
             condition=condition,
             contact_info=contact_info,
             renting_time=renting_time,
-            image_filename=image_filename,
+            image_filename=image_url, # Now saving URL or filename
             owner=current_user
         )
         

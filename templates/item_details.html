@@ -4,7 +4,11 @@
 <div class="item-details-container">
     <div class="item-image-large">
         {% if item.image_filename %}
+        {% if item.image_filename.startswith('http') %}
+        <img src="{{ item.image_filename }}" alt="{{ item.title }}">
+        {% else %}
         <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.title }}">
+        {% endif %}
         {% else %}
         <img src="https://via.placeholder.com/600x400?text=No+Image" alt="No Image">
         {% endif %}
