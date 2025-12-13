@@ -1,35 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="item-details-container"
-    style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; display: flex; gap: 2rem; align-items: flex-start;">
-    <div class="item-image-large" style="flex: 1;">
+<div class="item-details-container">
+    <div class="item-image-large">
         {% if item.image_filename %}
-        <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.title }}"
-            style="width: 100%; border-radius: 8px;">
+        <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.title }}">
         {% else %}
-        <img src="https://via.placeholder.com/400x300?text=No+Image" alt="No Image"
-            style="width: 100%; border-radius: 8px;">
+        <img src="https://via.placeholder.com/600x400?text=No+Image" alt="No Image">
         {% endif %}
     </div>
-    <div class="item-info" style="flex: 1;">
-        <h2 style="color: var(--primary-blue); margin-top: 0;">{{ item.title }}</h2>
-        <p class="price" style="font-size: 1.5rem; color: var(--secondary-green); font-weight: bold;">{{ item.price }}
-        </p>
+
+    <div class="item-info-section">
+        <h1 class="item-title-large">{{ item.title }}</h1>
+        <p class="item-price-large">{{ item.price }}</p>
+
         <p><strong>Condition:</strong> {{ item.condition }}</p>
         <p><strong>Duration:</strong> {{ item.renting_time }}</p>
-        <p><strong>Description:</strong></p>
-        <p>{{ item.description }}</p>
 
-        <div class="contact-box"
-            style="background: var(--light-gray); padding: 1rem; border-radius: 4px; margin-top: 1rem;">
-            <p style="margin: 0;"><strong>Contact Owner:</strong></p>
-            <p style="margin: 5px 0 0; font-size: 1.1rem;">{{ item.contact_info }}</p>
+        <div style="margin: 1.5rem 0;">
+            <p><strong>Description:</strong></p>
+            <p style="color: var(--text-light); line-height: 1.6;">{{ item.description }}</p>
         </div>
 
-        <a href="{{ url_for('index') }}"
-            style="display: inline-block; margin-top: 1rem; color: var(--primary-blue); text-decoration: none;">&larr;
-            Back to Browse</a>
+        <div class="contact-box">
+            <span class="contact-label">Contact Owner:</span>
+            <span class="contact-value">{{ item.contact_info }}</span>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="btn-action"
+            style="display: inline-block; margin-top: 2rem; text-decoration: none;">
+            &larr; Back to Browse
+        </a>
     </div>
 </div>
 {% endblock %}

@@ -1,28 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="upload-form">
-    <h2 style="text-align: center; color: var(--primary-blue);">Rent your things</h2>
+<div class="form-container">
+    <h2 style="text-align: center; color: var(--text-dark);">Rent Your Things</h2>
     <form action="{{ url_for('rent') }}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="image">Item Image</label>
-            <input type="file" name="image" id="image" accept="image/*" required>
+            <input type="file" name="image" id="image" accept="image/*" style="width: 100%; margin-top: 5px;" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 15px;">
             <label for="title">Item Name</label>
-            <input type="text" name="title" id="title" placeholder="e.g., Gaming Laptop, Old Keyboard" required>
+            <input type="text" name="title" id="title" placeholder="e.g., Gaming Laptop, Old Keyboard"
+                style="border: 1px solid #ccc; padding: 10px; width: 100%; border-radius: 4px;" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 15px;">
             <label for="description">Description</label>
             <textarea name="description" id="description" rows="4" placeholder="Describe your item..."
-                required></textarea>
+                style="border: 1px solid #ccc; padding: 10px; width: 100%; border-radius: 4px;" required></textarea>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 15px;">
             <label for="condition">Condition</label>
-            <select name="condition" id="condition">
+            <select name="condition" id="condition"
+                style="border: 1px solid #ccc; padding: 10px; width: 100%; border-radius: 4px;">
                 <option value="New">New</option>
                 <option value="Like New">Like New</option>
                 <option value="Good">Good</option>
@@ -31,22 +33,26 @@
             </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 15px;">
             <label for="price">Price (per day/week)</label>
-            <input type="text" name="price" id="price" placeholder="e.g., $10/day" required>
+            <input type="text" name="price" id="price" placeholder="e.g., $10/day"
+                style="border: 1px solid #ccc; padding: 10px; width: 100%; border-radius: 4px;" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 15px;">
             <label for="renting_time">Renting Duration</label>
-            <input type="text" name="renting_time" id="renting_time" placeholder="e.g., 1 week, 3 days" required>
+            <input type="text" name="renting_time" id="renting_time" placeholder="e.g., 1 week, 3 days"
+                style="border: 1px solid #ccc; padding: 10px; width: 100%; border-radius: 4px;" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 15px;">
             <label for="contact_info">Contact Details</label>
-            <input type="text" name="contact_info" id="contact_info" placeholder="Phone number or Email" required>
+            <input type="text" name="contact_info" id="contact_info" placeholder="Phone number or Email"
+                style="border: 1px solid #ccc; padding: 10px; width: 100%; border-radius: 4px;" required>
         </div>
 
-        <button type="submit" class="btn-submit">List Item</button>
+        <button type="submit" class="btn-submit btn-action primary" style="width: 100%; margin-top: 20px;">List
+            Item</button>
     </form>
 </div>
 {% endblock %}

@@ -1,34 +1,59 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="search-bar">
-    <form action="{{ url_for('index') }}" method="get">
-        <input type="text" name="q" placeholder="Search for unusual items..."
-            value="{{ search_query if search_query else '' }}">
-        <button type="submit">Search</button>
-    </form>
+<!-- Hero Section -->
+<div class="hero-section">
+    <!-- Floating Background Assets -->
+    <img src="{{ url_for('static', filename='images/duck.png') }}" alt="Duck" class="floating-asset asset-duck">
+    <img src="{{ url_for('static', filename='images/armor.png') }}" alt="Armor" class="floating-asset asset-armor">
+
+    <div class="hero-search-container">
+        <form action="{{ url_for('index') }}" method="get" class="search-form">
+            <input type="text" name="q" class="search-input"
+                placeholder="Search for a jetpack, a suit armor, or friendly clown..."
+                value="{{ search_query if search_query else '' }}">
+            <button type="submit" class="search-button">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+
+    <p class="hero-subtitle">It seems the unusual items are in hiding!</p>
+
+    <div class="hero-actions">
+        <a href="{{ url_for('rent') }}" class="btn-action primary">Rent Something Unusual!</a>
+        <a href="#" class="btn-action">Browse Popular Categories</a>
+    </div>
 </div>
 
-<div class="items-grid">
-    {% for item in items %}
-    <div class="item-card">
-        <a href="{{ url_for('item_details', item_id=item.id) }}"
-            style="text-decoration: none; color: inherit; display: block;">
-            {% if item.image_filename %}
-            <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.title }}"
-                class="item-image">
-            {% else %}
-            <img src="https://via.placeholder.com/300x200?text=No+Image" alt="No Image" class="item-image">
-            {% endif %}
-            <div class="item-details">
-                <h3 class="item-title">{{ item.title }}</h3>
-                <p class="item-price">{{ item.price }}</p>
-                <p><strong>Condition:</strong> {{ item.condition }}</p>
-            </div>
-        </a>
+<div class="container">
+    <h2 class="section-title">Featured Unusual Items</h2>
+
+    <div class="items-grid">
+        {% for item in items %}
+        <div class="item-card">
+            <a href="{{ url_for('item_details', item_id=item.id) }}">
+                <div class="item-image-container">
+                    {% if item.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/' + item.image_filename) }}" alt="{{ item.title }}"
+                        class="item-image">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x200?text=No+Image" alt="No Image" class="item-image">
+                    {% endif %}
+                    <div class="item-badge">NEW!</div>
+                </div>
+                <div class="item-details">
+                    <h3 class="item-title">{{ item.title }}</h3>
+                    <p><strong>{{ item.price }}</strong></p>
+                    <div class="item-card-footer">
+                        <span class="view-btn">View Details</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% else %}
+        <p class="no-items-message">No unusual items found yet.</p>
+        {% endfor %}
     </div>
-    {% else %}
-    <p class="no-items-message">No items found. Be the first to rent something unusual!</p>
-    {% endfor %}
 </div>
 {% endblock %}

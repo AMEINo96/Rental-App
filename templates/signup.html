@@ -1,36 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="upload-form">
-    <h2 style="text-align: center; color: var(--primary-blue);">Sign Up</h2>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }}"
-        style="padding: 10px; margin-bottom: 15px; border-radius: 4px; 
-                    {% if category == 'error' %}background-color: #f8d7da; color: #721c24;{% else %}background-color: #d4edda; color: #155724;{% endif %}">
-        {{ message }}
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+<div class="form-container">
+    <h2 style="text-align: center; color: var(--text-dark);">Sign Up</h2>
 
     <form method="post">
         <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username"
+                style="border: 1px solid #ccc; padding: 10px; width: 100%; border-radius: 4px;" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 15px;">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password"
+                style="border: 1px solid #ccc; padding: 10px; width: 100%; border-radius: 4px;" required>
         </div>
 
-        <button type="submit" class="btn-submit">Sign Up</button>
+        <button type="submit" class="btn-submit btn-action primary" style="width: 100%; margin-top: 20px;">Sign
+            Up</button>
     </form>
     <p style="text-align: center; margin-top: 15px;">
-        Already have an account? <a href="{{ url_for('login') }}" style="color: var(--primary-blue);">Log In</a>
+        Already have an account? <a href="{{ url_for('login') }}"
+            style="color: var(--primary-lime); font-weight: bold;">Log In</a>
     </p>
 </div>
 {% endblock %}
