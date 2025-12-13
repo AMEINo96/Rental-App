@@ -58,10 +58,7 @@ class Item(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Initialize DB (Create tables if not exist)
-@app.before_first_request
-def create_tables():
-    db.create_all()
+
 
 # Or manually call it if before_first_request is deprecated in newer Flask versions you might use
 with app.app_context():
