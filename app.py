@@ -3,93 +3,84 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.expression import func
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here' # Change this in production
-# Check if running on Vercel
-IS_VERCEL = os.environ.get('VERCEL') == '1'
+app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change this in production
 
-if IS_VERCEL:
+# Database Configuration
+# Vercel provides POSTGRES_URL, POSTGRES_PRISMA_URL, etc.
+# We prefer POSTGRES_URL for SQLAlchemy, but need to ensure it starts with postgresql://
+database_url = os.environ.get('POSTGRES_URL') or os.environ.get('DATABASE_URL')
+if database_url and database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Upload Configuration
+if os.environ.get('VERCEL') == '1':
     app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
-    DB_NAME = "/tmp/database.db"
 else:
     app.config['UPLOAD_FOLDER'] = 'static/uploads'
-    DB_NAME = "database.db"
 
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# Flask-Login setup
+# Initialize Extensions
+db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-class User(UserMixin):
-    def __init__(self, id, username, password_hash):
-        self.id = id
-        self.username = username
-        self.password_hash = password_hash
+# Models
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    items = db.relationship('Item', backref='owner', lazy=True)
+
+class Item(db.Model):
+    __tablename__ = 'items'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text)
+    price = db.Column(db.String(50))
+    condition = db.Column(db.String(50))
+    contact_info = db.Column(db.String(150))
+    renting_time = db.Column(db.String(50))
+    image_filename = db.Column(db.String(255))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("SELECT * FROM users WHERE id = ?", (user_id,))
-    user_data = c.fetchone()
-    conn.close()
-    if user_data:
-        return User(user_data[0], user_data[1], user_data[2])
-    return None
+    return User.query.get(int(user_id))
 
-def init_db():
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    
-    # Create users table
-    c.execute('''CREATE TABLE IF NOT EXISTS users
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  username TEXT UNIQUE NOT NULL,
-                  password_hash TEXT NOT NULL)''')
+# Initialize DB (Create tables if not exist)
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
-    # Create items table (if not exists)
-    c.execute('''CREATE TABLE IF NOT EXISTS items
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                  title TEXT NOT NULL,
-                  description TEXT,
-                  price TEXT,
-                  condition TEXT,
-                  contact_info TEXT,
-                  renting_time TEXT,
-                  image_filename TEXT,
-                  user_id INTEGER,
-                  FOREIGN KEY(user_id) REFERENCES users(id))''')
-    
-    # Check if user_id column exists in items table (migration)
-    c.execute("PRAGMA table_info(items)")
-    columns = [column[1] for column in c.fetchall()]
-    if 'user_id' not in columns:
-        c.execute("ALTER TABLE items ADD COLUMN user_id INTEGER REFERENCES users(id)")
+# Or manually call it if before_first_request is deprecated in newer Flask versions you might use
+with app.app_context():
+    db.create_all()
 
-    conn.commit()
-    conn.close()
-
-init_db()
+# Routes
 
 @app.route('/')
 def index():
     query = request.args.get('q')
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row
-    c = conn.cursor()
-    
     if query:
-        c.execute("SELECT * FROM items WHERE title LIKE ? OR description LIKE ?", ('%' + query + '%', '%' + query + '%'))
+        # Search by title or description
+        items = Item.query.filter(
+            (Item.title.ilike(f'%{query}%')) | 
+            (Item.description.ilike(f'%{query}%'))
+        ).all()
     else:
-        c.execute("SELECT * FROM items ORDER BY RANDOM()") # Random items as requested
-        
-    items = c.fetchall()
-    conn.close()
+        # Random items equivalent
+        items = Item.query.order_by(func.random()).all()
     return render_template('index.html', items=items, search_query=query)
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -98,19 +89,21 @@ def signup():
         username = request.form['username'].strip()
         password = request.form['password'].strip()
         
-        conn = sqlite3.connect(DB_NAME)
-        c = conn.cursor()
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists.', 'error')
+            return redirect(url_for('signup'))
+        
+        hashed_password = generate_password_hash(password)
+        new_user = User(username=username, password_hash=hashed_password)
         
         try:
-            hashed_password = generate_password_hash(password)
-            c.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, hashed_password))
-            conn.commit()
-            conn.close()
+            db.session.add(new_user)
+            db.session.commit()
             flash('Account created successfully! Please log in.', 'success')
             return redirect(url_for('login'))
-        except sqlite3.IntegrityError:
-            conn.close()
-            flash('Username already exists.', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error creating account: {e}', 'error')
             
     return render_template('signup.html')
 
@@ -120,14 +113,9 @@ def login():
         username = request.form['username'].strip()
         password = request.form['password'].strip()
         
-        conn = sqlite3.connect(DB_NAME)
-        c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE username = ?", (username,))
-        user_data = c.fetchone()
-        conn.close()
+        user = User.query.filter_by(username=username).first()
         
-        if user_data and check_password_hash(user_data[2], password):
-            user = User(user_data[0], user_data[1], user_data[2])
+        if user and check_password_hash(user.password_hash, password):
             login_user(user)
             return redirect(url_for('index'))
         else:
@@ -143,17 +131,8 @@ def logout():
 
 @app.route('/item/<int:item_id>')
 def item_details(item_id):
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row
-    c = conn.cursor()
-    c.execute("SELECT * FROM items WHERE id = ?", (item_id,))
-    item = c.fetchone()
-    conn.close()
-    
-    if item:
-        return render_template('item_details.html', item=item)
-    else:
-        return "Item not found", 404
+    item = Item.query.get_or_404(item_id)
+    return render_template('item_details.html', item=item)
 
 @app.route('/rent', methods=['GET', 'POST'])
 @login_required
@@ -173,12 +152,19 @@ def rent():
             image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             image_filename = filename
             
-        conn = sqlite3.connect(DB_NAME)
-        c = conn.cursor()
-        c.execute("INSERT INTO items (title, description, price, condition, contact_info, renting_time, image_filename, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                  (title, description, price, condition, contact_info, renting_time, image_filename, current_user.id))
-        conn.commit()
-        conn.close()
+        new_item = Item(
+            title=title,
+            description=description,
+            price=price,
+            condition=condition,
+            contact_info=contact_info,
+            renting_time=renting_time,
+            image_filename=image_filename,
+            owner=current_user
+        )
+        
+        db.session.add(new_item)
+        db.session.commit()
         
         return redirect(url_for('index'))
         
@@ -187,32 +173,22 @@ def rent():
 @app.route('/my_listings')
 @login_required
 def my_listings():
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row
-    c = conn.cursor()
-    c.execute("SELECT * FROM items WHERE user_id = ?", (current_user.id,))
-    items = c.fetchall()
-    conn.close()
+    # item.owner is set via backref, so item.user_id check is implicit
+    items = Item.query.filter_by(user_id=current_user.id).all()
     return render_template('my_listings.html', items=items)
 
 @app.route('/delete_item/<int:item_id>', methods=['POST'])
 @login_required
 def delete_item(item_id):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
+    item = Item.query.get_or_404(item_id)
     
-    # Verify ownership
-    c.execute("SELECT user_id FROM items WHERE id = ?", (item_id,))
-    item = c.fetchone()
-    
-    if item and item[0] == current_user.id:
-        c.execute("DELETE FROM items WHERE id = ?", (item_id,))
-        conn.commit()
+    if item.user_id == current_user.id:
+        db.session.delete(item)
+        db.session.commit()
         flash('Item deleted successfully.', 'success')
     else:
         flash('You do not have permission to delete this item.', 'error')
         
-    conn.close()
     return redirect(url_for('my_listings'))
 
 if __name__ == '__main__':
