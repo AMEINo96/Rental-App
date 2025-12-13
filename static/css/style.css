@@ -444,4 +444,38 @@ h2.section-title {
     .item-details-container {
         flex-direction: column;
     }
+
+    /* Header Mobile Styles */
+    header {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .brand-container {
+        justify-content: center;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .auth-buttons {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Adjust hero text/assets for mobile */
+    .hero-subtitle {
+        padding: 0 1rem;
+    }
+
+    .asset-duck,
+    .asset-armor {
+        display: none;
+        /* Hide floating assets on small screens to reduce clutter */
+    }
 }
