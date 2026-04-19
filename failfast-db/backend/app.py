@@ -2,6 +2,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 from mysql.connector import Error
+import os
+from dotenv import load_dotenv
+
+# Load environmental variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 # Enable CORS for all routes so the Next.js frontend can communicate with it
@@ -10,11 +15,11 @@ CORS(app)
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
-            host='mysql-77d9ae-potatoplayz96-cb73.g.aivencloud.com',
-            port=22137,
-            user='avnadmin',
-            password='your_password_here',
-            database='defaultdb'
+            host=os.getenv('DB_HOST', 'mysql-77d9ae-potatoplayz96-cb73.g.aivencloud.com'),
+            port=int(os.getenv('DB_PORT', 22137)),
+            user=os.getenv('DB_USER', 'avnadmin'),
+            password=os.getenv('DB_PASSWORD', 'your_password_here'),
+            database=os.getenv('DB_DATABASE', 'defaultdb')
         )
         return connection
     except Error as e:
