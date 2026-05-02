@@ -22,13 +22,13 @@ export default function GatewayPage() {
             className="group block bento-card relative overflow-hidden min-h-[220px] bg-white dark:bg-slate-800 transition-all duration-300 ease-in-out hover:scale-[1.02] active:scale-[0.98] cursor-pointer border border-slate-200 dark:border-slate-600 hover:border-cyan-300 hover:shadow-cyan-100/50 hover:shadow-lg dark:hover:border-cyan-700 dark:hover:shadow-cyan-900/50"
           >
             {/* Line Art Illustration */}
-            <div className="absolute right-0 bottom-0 top-0 w-1/2 z-0 overflow-hidden pointer-events-none">
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
               <img 
                 src="/images/gateway-library.png" 
                 alt="NUST Central Library" 
-                className="w-full h-full object-contain object-right-bottom mix-blend-multiply dark:invert dark:mix-blend-screen opacity-80 group-hover:scale-105 transition-transform duration-700 ease-out"
+                className="h-full w-full object-cover object-bottom opacity-[0.06] mix-blend-multiply transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-[0.14] md:opacity-[0.1] dark:opacity-[0.1] dark:mix-blend-screen dark:group-hover:opacity-[0.16] dark:[filter:brightness(0)_saturate(100%)_invert(79%)_sepia(25%)_saturate(1206%)_hue-rotate(177deg)_brightness(102%)_contrast(101%)]"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-slate-800 dark:via-slate-800/80" />
+              <div className="absolute inset-0 bg-gradient-to-r from-white via-white/70 to-transparent dark:from-slate-800 dark:via-slate-800/65" />
             </div>
 
             <div className="relative z-10 flex flex-col h-full justify-between">
@@ -44,14 +44,14 @@ export default function GatewayPage() {
                   <ArrowRight size={24} strokeWidth={2} />
                 </div>
               </div>
-              <div className="w-[65%] md:w-[60%]">
-                <h2 className="text-[28px] leading-[1.3] font-semibold text-slate-900 dark:text-white mb-2">
+              <div className="relative z-10 w-[68%] rounded-2xl bg-gradient-to-br from-white/80 via-white/50 to-transparent p-3 md:w-[60%] dark:from-slate-800/90 dark:via-slate-800/65 dark:to-transparent">
+                <h2 className="text-[28px] leading-[1.3] font-semibold text-slate-900 dark:text-slate-50 mb-2">
                   Student Portal
                 </h2>
-                <p className="font-[family-name:var(--font-space-grotesk)] text-xs tracking-wider font-semibold text-slate-600 dark:text-slate-400 mb-4 uppercase">
+                <p className="font-[family-name:var(--font-space-grotesk)] text-xs tracking-wider font-semibold text-slate-600 dark:text-slate-300 mb-4 uppercase">
                   (LMS &amp; Qalam)
                 </p>
-                <p className="text-base text-slate-600 dark:text-slate-300">
+                <p className="text-base text-slate-600 dark:text-slate-200">
                   Access LMS courses, check attendance, view grades, and Qalam updates.
                 </p>
               </div>
@@ -63,13 +63,13 @@ export default function GatewayPage() {
             className="group block bento-card relative overflow-hidden min-h-[220px] bg-white dark:bg-slate-800 transition-all duration-300 ease-in-out hover:scale-[1.02] active:scale-[0.98] cursor-pointer border border-slate-200 dark:border-slate-600 hover:border-cyan-300 hover:shadow-cyan-100/50 hover:shadow-lg dark:hover:border-cyan-700 dark:hover:shadow-cyan-900/50"
           >
             {/* Line Art Illustration */}
-            <div className="absolute right-0 bottom-0 top-0 w-1/2 z-0 overflow-hidden pointer-events-none">
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
               <img 
                 src="/images/gateway-s3c.png" 
                 alt="NUST S3C Office" 
-                className="w-full h-full object-contain object-right-bottom mix-blend-multiply dark:invert dark:mix-blend-screen opacity-80 group-hover:scale-105 transition-transform duration-700 ease-out"
+                className="h-full w-full object-cover object-bottom opacity-[0.06] mix-blend-multiply transition-all duration-700 ease-out group-hover:scale-105 group-hover:opacity-[0.14] md:opacity-[0.1] dark:opacity-[0.1] dark:mix-blend-screen dark:group-hover:opacity-[0.16] dark:[filter:brightness(0)_saturate(100%)_invert(79%)_sepia(25%)_saturate(1206%)_hue-rotate(177deg)_brightness(102%)_contrast(101%)]"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-slate-800 dark:via-slate-800/80" />
+              <div className="absolute inset-0 bg-gradient-to-r from-white via-white/70 to-transparent dark:from-slate-800 dark:via-slate-800/65" />
             </div>
 
             <div className="relative z-10 flex flex-col h-full justify-between">
@@ -85,14 +85,14 @@ export default function GatewayPage() {
                   <ArrowRight size={24} strokeWidth={2} />
                 </div>
               </div>
-              <div className="w-[65%] md:w-[60%]">
-                <h2 className="text-[28px] leading-[1.3] font-semibold text-slate-900 dark:text-white mb-2">
+              <div className="relative z-10 w-[68%] rounded-2xl bg-gradient-to-br from-white/80 via-white/50 to-transparent p-3 md:w-[60%] dark:from-slate-800/90 dark:via-slate-800/65 dark:to-transparent">
+                <h2 className="text-[28px] leading-[1.3] font-semibold text-slate-900 dark:text-slate-50 mb-2">
                   S3C Support
                 </h2>
-                <p className="font-[family-name:var(--font-space-grotesk)] text-xs tracking-wider font-semibold text-slate-600 dark:text-slate-400 mb-4 uppercase">
+                <p className="font-[family-name:var(--font-space-grotesk)] text-xs tracking-wider font-semibold text-slate-600 dark:text-slate-300 mb-4 uppercase">
                   &nbsp;
                 </p>
-                <p className="text-base text-slate-600 dark:text-slate-300">
+                <p className="text-base text-slate-600 dark:text-slate-200">
                   Browse campus services, manage hostel requests, IT help, and chatbot.
                 </p>
               </div>
