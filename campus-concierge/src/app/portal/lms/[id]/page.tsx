@@ -34,9 +34,9 @@ export default function LMSSubjectDetailsPage() {
     <>
       <TopBar title="Course Files" showBack={true} backHref="/portal/lms" />
       <main className="w-full max-w-4xl mx-auto px-6 py-12 pb-32">
-        <section className="mb-12">
-          <h2 className="text-[40px] leading-[1.2] font-bold text-[#171717] mb-2">Object-Oriented Programming</h2>
-          <p className="text-lg text-[#474747]">CS201 • Fall Semester</p>
+        <section className="mb-12 text-center md:text-left">
+          <h2 className="text-4xl font-bold text-[#0F172A] mb-2 tracking-tight">Object-Oriented Programming</h2>
+          <p className="text-lg text-[#64748B]">CS201 • Fall Semester</p>
         </section>
 
         <div className="flex overflow-x-auto pb-4 mb-6 gap-3 no-scrollbar">
@@ -44,10 +44,10 @@ export default function LMSSubjectDetailsPage() {
             <button 
               key={tab}
               onClick={() => setActiveTab(tab as any)}
-              className={`whitespace-nowrap px-4 py-2 rounded-full border font-[family-name:var(--font-space-grotesk)] text-xs font-semibold active:scale-95 transition-all ${
+              className={`whitespace-nowrap px-5 py-2.5 rounded-full border text-sm font-semibold transition-all shadow-sm ${
                 activeTab === tab 
-                  ? "border-[var(--color-primary)] text-[var(--color-primary)] bg-white" 
-                  : "border-[#171717] text-[#171717] bg-white hover:bg-[#f9f9f8]"
+                  ? "border-[#3B82F6] text-[#3B82F6] bg-[#EFF6FF]" 
+                  : "border-[#E2E8F0] text-[#64748B] bg-white/80 backdrop-blur-sm hover:bg-white"
               }`}
             >
               {tab === "Lecture" ? "Lectures" : tab === "Lab Manual" ? "Lab Manuals" : tab === "Assignment" ? "Assignments" : tab}
@@ -58,25 +58,25 @@ export default function LMSSubjectDetailsPage() {
         <div className="flex flex-col gap-4">
           {filteredFiles.length > 0 ? (
             filteredFiles.map(file => (
-              <div key={file.id} className="bg-white border border-[#171717] rounded-xl p-6 flex items-center gap-4 transition-transform hover:-translate-y-1 duration-200 cursor-pointer">
-                <div className="flex-shrink-0 bg-[#eeeeed] w-12 h-12 flex items-center justify-center rounded-lg">
+              <div key={file.id} className="bento-card-light p-5 flex items-center gap-4 cursor-pointer hover:border-[#3B82F6] group">
+                <div className="flex-shrink-0 bg-[#F1F5F9] group-hover:bg-[#DBEAFE] w-12 h-12 flex items-center justify-center rounded-xl transition-colors border border-[#E2E8F0]">
                   {file.name.endsWith(".zip") ? (
-                    <FileArchive size={24} strokeWidth={2} className="text-[#171717]" />
+                    <FileArchive size={24} strokeWidth={2} className="text-[#1E3A8A] group-hover:text-[#3B82F6] transition-colors" />
                   ) : (
-                    <FileText size={24} strokeWidth={2} className="text-[#171717]" />
+                    <FileText size={24} strokeWidth={2} className="text-[#1E3A8A] group-hover:text-[#3B82F6] transition-colors" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-[#171717] truncate">{file.name}</h3>
-                  <p className="text-sm text-[#474747] truncate mt-1">{file.uploaded} • {file.size}</p>
+                  <h3 className="text-lg font-semibold text-[#0F172A] truncate">{file.name}</h3>
+                  <p className="text-sm text-[#64748B] truncate mt-1">{file.uploaded} • {file.size}</p>
                 </div>
-                <button className="flex-shrink-0 bg-[var(--color-primary)] w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-[#004c6a] transition-colors active:scale-95">
+                <button className="flex-shrink-0 btn-primary w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md">
                   <Download size={20} strokeWidth={2.5} />
                 </button>
               </div>
             ))
           ) : (
-            <div className="text-center py-12 text-[#474747]">
+            <div className="text-center py-12 text-[#64748B]">
               No files found for this category.
             </div>
           )}
