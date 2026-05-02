@@ -1,28 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TopBar from "@/components/TopBar";
-import { Moon, Sun } from "lucide-react";
+import { Landmark, Moon, Sun } from "lucide-react";
+import { AppTheme, applyTheme, getInitialTheme } from "@/lib/theme";
 
 export default function GatewaySettingsPage() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<AppTheme>(getInitialTheme);
 
-  // Load current theme from document class
-  useEffect(() => {
-    if (document.documentElement.classList.contains("dark")) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-  }, []);
-
-  const toggleTheme = (newTheme: "light" | "dark") => {
+  const toggleTheme = (newTheme: AppTheme) => {
     setTheme(newTheme);
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    applyTheme(newTheme);
   };
 
   return (
@@ -37,7 +25,7 @@ export default function GatewaySettingsPage() {
         <section className="mb-12">
           <h2 className="text-xl font-bold text-[#0F172A] dark:text-white mb-4">Appearance</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Light Theme Option */}
             <button 
               onClick={() => toggleTheme("light")}
@@ -67,6 +55,22 @@ export default function GatewaySettingsPage() {
               <div>
                 <h3 className="font-bold text-[#0F172A] dark:text-white">Dark Theme</h3>
                 <p className="text-sm text-[#64748B] dark:text-slate-400">Grey slate color, easy on the eyes.</p>
+              </div>
+            </button>
+
+            {/* NUST Exclusive Option */}
+            <button 
+              onClick={() => toggleTheme("nust-exclusive")}
+              className={`bento-card-light dark:bg-slate-800 dark:border-slate-700 p-6 flex items-center gap-4 transition-all text-left ${
+                theme === "nust-exclusive" ? "ring-2 ring-[#1876B5] border-[#1876B5]" : "hover:border-[#1876B5]"
+              }`}
+            >
+              <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                <Landmark size={24} className={theme === "nust-exclusive" ? "text-[#1876B5]" : "text-[#64748B] dark:text-slate-400"} />
+              </div>
+              <div>
+                <h3 className="font-bold text-[#0F172A] dark:text-white">NUST EXCLUSIVE</h3>
+                <p className="text-sm text-[#64748B] dark:text-slate-400">Official NUST palette with campus-focused accents.</p>
               </div>
             </button>
           </div>

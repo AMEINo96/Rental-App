@@ -24,6 +24,14 @@
   --foreground: #F8FAFC;
 }
 
+html.theme-nust-exclusive,
+:root[data-theme="nust-exclusive"] {
+  --background: #E8F1F8;
+  --foreground: #11213D;
+}
+
+@custom-variant nust (&:is(.theme-nust-exclusive *));
+
 body {
   background-color: var(--background);
   color: var(--foreground);
@@ -71,6 +79,12 @@ body {
   background-color: #1E293B;
   border-color: #334155;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.theme-nust-exclusive .bento-card,
+.theme-nust-exclusive .bento-card-light {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(24, 118, 181, 0.3);
 }
 
 .dark .bento-card:hover,

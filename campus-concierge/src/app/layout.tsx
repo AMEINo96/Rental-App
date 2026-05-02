@@ -27,7 +27,7 @@ export default function RootLayout({
       lang="en"
       className={`${publicSans.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-white dark:bg-slate-900 text-slate-900 dark:text-white relative overflow-x-hidden transition-colors duration-300">
+      <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)] relative overflow-x-hidden transition-colors duration-300">
         {/* Background Building Illustration */}
         <div 
           className="fixed top-0 right-0 w-[800px] h-[600px] pointer-events-none z-[-1] opacity-10 md:opacity-20 dark:opacity-5 translate-x-1/4 -translate-y-10"
